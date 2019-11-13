@@ -1,10 +1,6 @@
 package edu.utc.game;
-
 import java.nio.IntBuffer;
-import java.awt.Rectangle;
 import java.nio.ByteBuffer;
-import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.Map;
 
 import static org.lwjgl.stb.STBImage.stbi_load;
@@ -91,6 +87,17 @@ public class Text extends GameObject {
         }
     }
 
+    public void setText(String text)
+    {
+        this.textArray = text.split("");
+    }
+
+    public void setSize(int width, int height)
+    {
+        w = width;
+        h = height;
+    }
+
     public void setColor(float r, float g, float b)
     {
         this.r = r;
@@ -99,13 +106,13 @@ public class Text extends GameObject {
     }
 
     //So you can do dynamic things with the text
-    public void update(int delta){
+    public void update(int delta)
+    {
 
     }
 
     public void draw()
     {
-
         GL11.glColor3f(r,g,b);
 
         GL11.glBindTexture(GL11.GL_TEXTURE_2D,  id);

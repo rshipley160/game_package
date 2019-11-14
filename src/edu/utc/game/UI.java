@@ -98,8 +98,6 @@ public class UI {
 		GLFW.glfwGetFramebufferSize(window, ww, wh);
 		this.width=ww[0];
 		this.height=wh[0];
-		System.out.println("framebuffer dim: " + this.width + "x" + this.height);
-
 	}
 	
 	public void setViewport(float xmin, float ymin, float xmax, float ymax)

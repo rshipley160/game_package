@@ -28,65 +28,87 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
 public class UI {
-	
+
 	private long window;
 	private long audioDevice;
 	private int width;
 	private int height;
-	
+
 	public void init(int width, int height, String title)
 	{
-		
+
 		// initialize graphics
 		if ( !glfwInit() )
 			throw new IllegalStateException("Unable to initialize GLFW");
-		
+
+
+		glfwDefaultWindowHints();
+		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
+		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE); // the window will be resizable
+
 		window = glfwCreateWindow(width, height, title, NULL, NULL);
-		
+
 
 		if ( window == NULL )
 			throw new RuntimeException("Failed to create the GLFW window");
-		glfwDefaultWindowHints();
-		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
-		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
-	
-		
+
 		//set up OpenGL
 		glfwMakeContextCurrent(window);
 		GL.createCapabilities();
 		glfwSwapInterval(1);
-		
-		
-		
-		
+
+
+
+
 		// set projection to dimensions of window
-        // set viewport to entire window
-        GL11.glViewport(0,0,width,height);
-         
-        // set up orthographic projection to map world pixels to screen
-        GL11.glMatrixMode(GL11.GL_PROJECTION);
-        GL11.glLoadIdentity();
-        GL11.glOrtho(0, width, height, 0, 1, -1);
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-        
-    	GL11.glEnable(GL11.GL_TEXTURE_2D);
-    	GL11.glEnable(GL11.GL_BLEND);
-    	GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		// set viewport to entire window
+		GL11.glViewport(0,0,width,height);
 
-    	// initialize audio system
-    	audioDevice = ALC10.alcOpenDevice((ByteBuffer)null);
-    	ALCCapabilities deviceCaps = ALC.createCapabilities(audioDevice);
+		// set up orthographic projection to map world pixels to screen
+		GL11.glMatrixMode(GL11.GL_PROJECTION);
+		GL11.glLoadIdentity();
+		GL11.glOrtho(0, width, height, 0, 1, -1);
+		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 
-    	long context = ALC10.alcCreateContext(audioDevice, (IntBuffer)null);
-    	ALC10.alcMakeContextCurrent(context);
-    	AL.createCapabilities(deviceCaps);    	
-        this.width=width;
-        this.height=height;
-        
-        glfwShowWindow(window);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+		// initialize audio system
+		audioDevice = ALC10.alcOpenDevice((ByteBuffer)null);
+		ALCCapabilities deviceCaps = ALC.createCapabilities(audioDevice);
+
+		long context = ALC10.alcCreateContext(audioDevice, (IntBuffer)null);
+		ALC10.alcMakeContextCurrent(context);
+		AL.createCapabilities(deviceCaps);    	
+
+
+
+		glfwShowWindow(window);
+		getWindowDimensions();
+
+
+	}
+
+	// framebuffer needs to be queried, for things like retina displays
+	private void getWindowDimensions()
+	{
+		int[] ww=new int[1];
+		int[] wh=new int[1];
+		GLFW.glfwGetFramebufferSize(window, ww, wh);
+		this.width=ww[0];
+		this.height=wh[0];
+		System.out.println("framebuffer dim: " + this.width + "x" + this.height);
 
 	}
 	
+	public void setViewport(float xmin, float ymin, float xmax, float ymax)
+	{
+		GL11.glViewport((int)(xmin*width), (int)(ymin*height), 
+				(int)(xmax*width), (int)(ymax*height));		
+	}
+
+
 	public void showMouseCursor(boolean show)
 	{
 		if (show)
@@ -96,10 +118,10 @@ public class UI {
 		else
 		{
 			GLFW.glfwSetInputMode(window, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_HIDDEN);
-			
+
 		}
 	}
-	
+
 	public void enableMouseCursor(boolean enable)
 	{
 		if (enable)
@@ -109,10 +131,10 @@ public class UI {
 		else
 		{
 			GLFW.glfwSetInputMode(window, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
-			
+
 		}
 	}
-	
+
 	public XYPair<Integer> getMouseLocation()
 	{
 		double[] x = new double[1];
@@ -120,20 +142,20 @@ public class UI {
 		GLFW.glfwGetCursorPos(window,  x,  y);
 		return new XYPair<Integer>((int)x[0],(int)y[0]);
 	}
-	
+
 	public boolean mouseButtonIsPressed(int button)
 	{
 		return GLFW.glfwGetMouseButton(window, button) == GLFW.GLFW_PRESS;
 	}
-	
+
 	public long getWindow() { return window; }
 	public int getWidth() { return width; }
 	public int getHeight() { return height; }
-	
+
 	public boolean keyPressed(int key) { 
 		return glfwGetKey(window, key) == GLFW_PRESS;
 	}
-	
+
 	public void destroy(){
 		ALC10.alcCloseDevice(audioDevice);
 		ALC.destroy();
@@ -144,8 +166,8 @@ public class UI {
 		GLFW.glfwDestroyWindow(window);
 		GLFW.glfwTerminate();
 	}
-	
-	
-	
+
+
+
 
 }

@@ -124,7 +124,7 @@ public class Text extends GameObject {
             int col =  mapIndex%16;
 
             //Used to determine bottom and right edges of characters
-            int nextC = (mapIndex+1)%16;
+            int nextC = (mapIndex)%16+1;
             int nextR = mapIndex/16 + 1;
 
             //using width / 2 works much better than the whole width

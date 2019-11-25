@@ -127,7 +127,6 @@ public class Text extends GameObject {
             int nextC = (mapIndex)%16+1;
             int nextR = mapIndex/16 + 1;
 
-            System.out.println("Character: "+textArray[index]+" X: "+col+", "+nextC+" Y: "+row+", "+nextR);
             //using width / 2 works much better than the whole width
             GL11.glBegin(GL11.GL_QUADS);
             GL11.glTexCoord2f(col/16f, row/16f);

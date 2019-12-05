@@ -9,6 +9,7 @@ public  class GameObject {
 	protected float r;
 	protected float g;
 	protected float b;
+        protected float a;
 	
 	protected Rectangle hitbox=new Rectangle();
 
@@ -16,6 +17,14 @@ public  class GameObject {
 		this.r=r;
 		this.g=g;
 		this.b=b;
+		this.a=1f;
+	}
+	
+	protected void setColor(float r, float g, float b, float a) {
+		this.r=r;
+		this.g=g;
+		this.b=b;
+		this.a=a;
 	}
 	
 	protected void setTexture(String path) {
@@ -44,7 +53,7 @@ public  class GameObject {
     
     public void draw() { 
     	
-    	GL11.glColor3f(r,g,b);
+    	GL11.glColor4f(r,g,b,a);
     	
     	float x=(float)hitbox.getX();
     	float y=(float)hitbox.getY();
